@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuickPoll</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="noise"></div>
+
+    <section id="auth" class="auth">
+      <div class="auth-hero">
+        <div class="brand">
+          <div class="logo-icon">
+            <span></span>
+          </div>
+          <span>QuickPoll</span>
+        </div>
+        <h1>Build polls that spark conversation.</h1>
+        <p>
+          Design beautiful questions, collect live feedback, and share results with a single link.
+        </p>
+        <div class="auth-features">
+          <div class="feature">
+            <div class="feature-icon"></div>
+            <div>
+              <h4>Realtime results</h4>
+              <p>Track every vote as it lands with live visualizations.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="feature-icon"></div>
+            <div>
+              <h4>Shareable polls</h4>
+              <p>Send your poll URL or QR code in seconds.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="feature-icon"></div>
+            <div>
+              <h4>Secure access</h4>
+              <p>Lightweight login keeps your poll data organized.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <form id="login-form" class="auth-card">
+        <h2>Sign in</h2>
+        <p class="muted">Use any username and password to access the demo.</p>
+        <label for="login-username">Username</label>
+        <input id="login-username" type="text" autocomplete="username" placeholder="Enter your name" />
+
+        <label for="login-password">Password</label>
+        <input
+          id="login-password"
+          type="password"
+          autocomplete="current-password"
+          placeholder="********"
+        />
+
+        <button id="login-btn" class="btn primary" type="submit">Sign in</button>
+        <div id="login-error" class="error"></div>
+        <div class="auth-meta">Need an account? This is a UI demo.</div>
+      </form>
+    </section>
+
+    <div id="app" class="app" hidden>
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="logo-icon">
+            <span></span>
+          </div>
+          <span>QuickPoll</span>
+        </div>
+
+        <nav class="nav">
+          <button class="nav-item active" data-view="dashboard" type="button">
+            <span class="nav-dot"></span>
+            Dashboard
+          </button>
+          <button class="nav-item" data-view="create" type="button">
+            <span class="nav-dot"></span>
+            Create Poll
+          </button>
+          <button class="nav-item" data-view="detail" type="button">
+            <span class="nav-dot"></span>
+            Poll Detail
+          </button>
+          <button class="nav-item" data-view="trending" type="button">
+            <span class="nav-dot"></span>
+            Trending
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button id="logout-btn" class="nav-item logout" type="button">
+            <span class="nav-dot"></span>
+            Logout
+          </button>
+        </div>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">QuickPoll</p>
+            <h1 class="page-title">
+              <span id="page-title-text">Welcome back,</span>
+              <span id="user-name">Guest</span>
+            </h1>
+            <p id="page-subtitle" class="muted">Here&apos;s what&apos;s happening with your polls</p>
+          </div>
+          <div class="topbar-actions">
+            <button id="export-btn" class="btn ghost" type="button" hidden>Export CSV</button>
+            <button class="btn primary" data-action="create-poll" type="button">Create Poll</button>
+          </div>
+        </header>
+
+        <section
+          class="view"
+          data-view="dashboard"
+          data-title="Welcome back,"
+          data-subtitle="Here&apos;s what&apos;s happening with your polls"
+          data-show-user="true"
+        >
+          <div class="stats-grid">
+            <article class="stat-card gradient-purple">
+              <div class="stat-icon"></div>
+              <div>
+                <p class="muted">My Polls</p>
+                <h3 id="stat-my-polls">0</h3>
+              </div>
+            </article>
+            <article class="stat-card gradient-blue">
+              <div class="stat-icon"></div>
+              <div>
+                <p class="muted">Total Votes</p>
+                <h3 id="stat-total-votes">0</h3>
+              </div>
+            </article>
+            <article class="stat-card gradient-green">
+              <div class="stat-icon"></div>
+              <div>
+                <p class="muted">Active Polls</p>
+                <h3 id="stat-active">0</h3>
+              </div>
+            </article>
+            <article class="stat-card gradient-amber">
+              <div class="stat-icon"></div>
+              <div>
+                <p class="muted">Expired Polls</p>
+                <h3 id="stat-expired">0</h3>
+              </div>
+            </article>
+          </div>
+
+          <div class="filters">
+            <div class="search">
+              <input id="poll-search" type="text" placeholder="Search polls..." />
+            </div>
+            <div class="pill-group">
+              <button class="pill active" type="button" data-filter="all">All</button>
+              <button class="pill" type="button" data-filter="active">Active</button>
+              <button class="pill" type="button" data-filter="expired">Expired</button>
+              <button class="pill" type="button" data-filter="popular">Popular</button>
+              <button class="pill" type="button" data-filter="bookmarked">Bookmarked</button>
+            </div>
+          </div>
+
+          <div id="poll-grid" class="poll-grid"></div>
+          <div id="poll-empty" class="empty-state" hidden>No polls yet. Create your first poll.</div>
+        </section>
+
+        <section
+          class="view"
+          data-view="create"
+          data-title="Create a Poll"
+          data-subtitle="Ask a question and let the community decide"
+          hidden
+        >
+          <div class="panel">
+            <div class="panel-header">
+              <h2>AI Assistant</h2>
+              <button
+                id="voice-ai-btn"
+                class="icon-btn voice-btn"
+                type="button"
+                aria-label="Dictate poll prompt"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Zm6 9a6 6 0 0 1-12 0H4a8 8 0 0 0 7 7.93V22h2v-2.07A8 8 0 0 0 20 12h-2Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </button>
+            </div>
+            <p class="muted">Describe the poll and let AI generate a question and options.</p>
+            <textarea
+              id="ai-prompt"
+              rows="3"
+              placeholder="Example: Ask about favorite programming language for beginners with 4 options."
+            ></textarea>
+            <div class="ai-actions">
+              <button id="ai-generate-btn" class="btn ghost" type="button">Generate with AI</button>
+              <span id="ai-status" class="muted"></span>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Your Question</h2>
+              <span id="question-count" class="muted">0/200</span>
+            </div>
+            <form id="create-poll-form">
+              <div class="input-row">
+                <input
+                  id="poll-question"
+                  type="text"
+                  maxlength="200"
+                  placeholder="What&apos;s your question?"
+                />
+                <button
+                  id="voice-question-btn"
+                  class="icon-btn voice-btn"
+                  type="button"
+                  aria-label="Dictate question"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Zm6 9a6 6 0 0 1-12 0H4a8 8 0 0 0 7 7.93V22h2v-2.07A8 8 0 0 0 20 12h-2Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Answer Options</h2>
+              <span id="option-count" class="muted">2/6</span>
+            </div>
+            <div id="option-list" class="option-list">
+              <div class="option-row">
+                <label class="correct-picker">
+                  <input
+                    type="radio"
+                    name="correct-option"
+                    data-correct-input
+                    checked
+                  />
+                </label>
+                <span class="option-badge">A</span>
+                <input data-option-input type="text" placeholder="Option 1" />
+              </div>
+              <div class="option-row">
+                <label class="correct-picker">
+                  <input type="radio" name="correct-option" data-correct-input />
+                </label>
+                <span class="option-badge">B</span>
+                <input data-option-input type="text" placeholder="Option 2" />
+              </div>
+            </div>
+            <button id="add-option-btn" class="btn ghost add-option" type="button">
+              + Add Option
+            </button>
+            <textarea id="poll-options" class="sr-only" rows="6"></textarea>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Poll Settings</h2>
+            </div>
+            <div class="setting-row">
+              <div>
+                <h4>Quiz Mode</h4>
+                <p class="muted">Mark a correct answer for this poll.</p>
+              </div>
+              <label class="toggle">
+                <input id="quiz-toggle" type="checkbox" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="setting-row">
+              <div>
+                <h4>Set Expiry Time</h4>
+                <p class="muted">Automatically close after a set time.</p>
+              </div>
+              <label class="toggle">
+                <input id="expiry-toggle" type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="setting-row">
+              <div>
+                <h4>Allow Anonymous Voting</h4>
+                <p class="muted">Voters won&apos;t need to identify themselves.</p>
+              </div>
+              <label class="toggle">
+                <input id="anon-toggle" type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <button id="create-poll-btn" class="btn primary wide" type="button">Create Poll</button>
+          <div class="status">
+            <div id="status"></div>
+            <div id="errors" class="error"></div>
+          </div>
+        </section>
+
+        <section
+          class="view"
+          data-view="detail"
+          data-title="Poll Results"
+          data-subtitle="Track how your audience is voting in real time"
+          data-export="true"
+          hidden
+        >
+          <div class="detail-header">
+            <div>
+              <p class="eyebrow">Poll</p>
+              <h2 id="poll-title">Poll title</h2>
+              <p id="poll-meta" class="muted">by Guest - 0 votes</p>
+            </div>
+            <div class="detail-actions">
+              <button id="speak-results-btn" class="btn ghost" type="button">Speak Results</button>
+              <button id="duplicate-btn" class="btn ghost" type="button">Duplicate</button>
+            </div>
+          </div>
+
+          <div class="detail-grid">
+            <div class="panel">
+              <h3>You voted</h3>
+              <div id="vote-list" class="vote-list"></div>
+              <div id="answer-status" class="answer-status"></div>
+            </div>
+
+            <div class="side-stack">
+              <div class="panel share-card">
+                <div class="share-header">
+                  <h3>Share Poll</h3>
+                  <button
+                    id="share-icon-btn"
+                    class="icon-btn share-btn"
+                    type="button"
+                    aria-label="Copy share link"
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M18 8a3 3 0 1 0-2.83-4H15a3 3 0 0 0 3 4Zm-12 8a3 3 0 1 0 2.83 4H9a3 3 0 0 0-3-4Zm12-4a3 3 0 1 0 0-6 2.98 2.98 0 0 0-2.12.88l-6.76 3.87a3.04 3.04 0 0 0 0 2.5l6.76 3.87A2.98 2.98 0 0 0 18 12Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <div class="qr">
+                  <svg viewBox="0 0 120 120" aria-hidden="true">
+                    <rect width="120" height="120" fill="#121622" />
+                    <rect x="8" y="8" width="28" height="28" fill="#a855f7" />
+                    <rect x="84" y="8" width="28" height="28" fill="#a855f7" />
+                    <rect x="8" y="84" width="28" height="28" fill="#a855f7" />
+                    <rect x="20" y="20" width="12" height="12" fill="#0b0f1a" />
+                    <rect x="96" y="20" width="12" height="12" fill="#0b0f1a" />
+                    <rect x="20" y="96" width="12" height="12" fill="#0b0f1a" />
+                    <rect x="50" y="18" width="10" height="10" fill="#7c4dff" />
+                    <rect x="62" y="30" width="8" height="8" fill="#7c4dff" />
+                    <rect x="48" y="40" width="6" height="6" fill="#7c4dff" />
+                    <rect x="70" y="52" width="10" height="10" fill="#7c4dff" />
+                    <rect x="42" y="60" width="12" height="12" fill="#7c4dff" />
+                    <rect x="58" y="72" width="8" height="8" fill="#7c4dff" />
+                    <rect x="74" y="76" width="8" height="8" fill="#7c4dff" />
+                  </svg>
+                </div>
+                <div id="share-link" class="share-link">https://quickpoll.app/poll/xxxxxx</div>
+                <div class="share-actions">
+                  <button id="share-btn" class="btn ghost" type="button">Share</button>
+                  <button id="copy-link-btn" class="btn ghost" type="button">Copy link</button>
+                </div>
+              </div>
+
+              <div class="panel analytics-card">
+                <h3>Analytics</h3>
+                <div class="analytics-row">
+                  <span class="muted">Total Votes</span>
+                  <span id="analytics-votes">0</span>
+                </div>
+                <div class="analytics-row">
+                  <span class="muted">Options</span>
+                  <span id="analytics-options">0</span>
+                </div>
+                <div class="analytics-row">
+                  <span class="muted">Leading</span>
+                  <span id="analytics-leading">-</span>
+                </div>
+                <div class="analytics-row">
+                  <span class="muted">Status</span>
+                  <span id="analytics-status" class="status-pill">Active</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="charts-grid">
+            <div class="panel">
+              <h3>Vote Distribution</h3>
+              <div id="bar-chart" class="bar-chart"></div>
+            </div>
+            <div class="panel">
+              <h3>Percentage Breakdown</h3>
+              <div id="donut" class="donut" aria-hidden="true"></div>
+              <div id="legend" class="legend"></div>
+            </div>
+          </div>
+
+          <div class="panel comments">
+            <div class="panel-header">
+              <h3>Comments (<span id="comment-count">0</span>)</h3>
+            </div>
+            <div class="comment-input">
+              <input id="comment-input" type="text" placeholder="Add a comment..." />
+              <button id="comment-send" class="btn icon" type="button" aria-label="Send"></button>
+            </div>
+            <div id="comment-list" class="comment-list"></div>
+            <div class="reaction-row">
+              <span class="reaction"></span>
+              <span class="reaction"></span>
+              <span class="reaction"></span>
+              <span class="reaction"></span>
+              <span class="reaction"></span>
+            </div>
+            <p id="comment-empty" class="muted center">No comments yet. Be the first!</p>
+          </div>
+        </section>
+
+        <section
+          class="view"
+          data-view="trending"
+          data-title="Trending Polls"
+          data-subtitle="Most shared questions right now"
+          hidden
+        >
+          <div class="panel">
+            <div class="trend-item">
+              <div>
+                <h3>Best language for AI research?</h3>
+                <p class="muted">2.4k votes - Trending worldwide</p>
+              </div>
+              <span class="badge info">Hot</span>
+            </div>
+            <div class="trend-item">
+              <div>
+                <h3>Should teams be remote by default?</h3>
+                <p class="muted">1.1k votes - Trending in Tech</p>
+              </div>
+              <span class="badge info">Rising</span>
+            </div>
+            <div class="trend-item">
+              <div>
+                <h3>Top cloud provider in 2026?</h3>
+                <p class="muted">850 votes - Trending in DevOps</p>
+              </div>
+              <span class="badge info">New</span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="QuickPoll.js"></script>
+  </body>
+</html>

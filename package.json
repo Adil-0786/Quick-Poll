@@ -1,0 +1,14 @@
+{
+  "name": "quickpoll",
+  "version": "1.0.0",
+  "description": "QuickPoll demo backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "node-fetch": "^2.6.12",
+    "ws": "^8.17.0"
+  }
+}
